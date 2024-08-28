@@ -12,36 +12,58 @@ const server = app.listen(3000, () => {
 });
 
 class Pet {
-  constructor() {
-    this.state = 'Idle'; // Initial state
-    this.hunger = 100; // Example attribute
-    // Add other attributes as needed
+  constructor(name) {
+    this.name = name;
+    this.hunger = 0;
+    this.happiness = 100;
+    this.energy = 100;
+    this.age = 0;
+    this.isAlive = true;
   }
 
-  handleEvent(event) {
-    switch (event) {
-      case 'Feed':
-        this.hunger = Math.min(this.hunger + 10, 100);
-        this.state = 'Happy';
-        break;
-      case 'Play':
-        this.state = 'Playing';
-        // Other state changes
-        break;
-      // Add other events and state transitions
+  feed() {
+    this.hunger = Math.max(0, this.hunger - 20);
+    this.happiness += 5;
+    console.log(`${this.name} has been fed.`);
+  }
+
+  play() {
+    this.happiness += 20;
+    this.energy -= 10;
+    this.hunger += 5;
+    console.log(`${this.name} enjoyed playing!`);
+  }
+
+  sleep() {
+    this.energy = 100;
+    this.hunger += 10;
+    console.log(`${this.name} had a good sleep.`);
+  }
+
+  checkStatus() {
+    console.log(`
+      Name: ${this.name}
+      Age: ${this.age}
+      Hunger: ${this.hunger}
+      Happiness: ${this.happiness}
+      Energy: ${this.energy}
+    `);
+  }
+
+  timePasses() {
+    this.age++;
+    this.hunger += 5;
+    this.happiness -= 5;
+    this.energy -= 5;
+
+    if (this.hunger >= 100 || this.happiness <= 0 || this.energy <= 0) {
+      this.isAlive = false;
+      console.log(`${this.name} has passed away. Game over.`);
     }
-  }
-
-  getState() {
-    return {
-      state: this.state,
-      hunger: this.hunger,
-      // Return other attributes
-    };
   }
 }
 
-const pet = new Pet();
+const pet = new Pet('OwO');
 
 const wss = new WebSocket.Server({ server });
 
@@ -52,7 +74,7 @@ wss.on('connection', ws => {
     console.log(`Received message: ${message}`);
     console.log(typeof message)
     if(message == 'check') {
-      ws.send('!'+JSON.stringify(pet))
+      ws.send(JSON.stringify(pet))
     } 
     else {
       console.log('...')
@@ -64,6 +86,7 @@ wss.on('connection', ws => {
     console.log('Client disconnected');
   });
 });
+
 /* TU DU
 - Pet Class/State Object
 - Handle the event and update the pet's state
@@ -74,3 +97,10 @@ wss.on('connection', ws => {
 https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 
 */
+
+function gameLoop() {
+  // changes
+  console.log(pet)
+}
+
+setInterval(gameLoop, 1000 * 3)
