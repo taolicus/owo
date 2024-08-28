@@ -35,15 +35,8 @@ const owo = document.getElementById('owo')
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
-const blink = setInterval(async () => {
-  owo.innerHTML = states[1].ascii
-  await sleep(200)
-  owo.innerHTML = states[0].ascii
-  await sleep(200)
-  owo.innerHTML = states[1].ascii
-  await sleep(200)
-  owo.innerHTML = states[0].ascii
-}, 6000)
+
+let blink
 
 // Web Socket Client
 
@@ -71,9 +64,26 @@ function connect(owoData) {
       if(!owoData.isAlive) {
         clearInterval(blink)
         owo.innerHTML = states[6].ascii
+        document.getElementById('feed').style.display = 'none'
+        document.getElementById('play').style.display = 'none'
+        document.getElementById('sleep').style.display = 'none'
+        document.getElementById('revive').style.display = 'block'
       }
       else {
         owo.innerHTML = states[0].ascii
+        document.getElementById('feed').style.display = 'inline-block'
+        document.getElementById('play').style.display = 'inline-block'
+        document.getElementById('sleep').style.display = 'inline-block'
+        document.getElementById('revive').style.display = 'none'
+        blink = setInterval(async () => {
+          owo.innerHTML = states[1].ascii
+          await sleep(200)
+          owo.innerHTML = states[0].ascii
+          await sleep(200)
+          owo.innerHTML = states[1].ascii
+          await sleep(200)
+          owo.innerHTML = states[0].ascii
+        }, 6000)
       }
       // switch(response) {
       //   default:
@@ -102,13 +112,12 @@ function connect(owoData) {
 connect(owoData)
 
 // User Actions
-const check = document.getElementById('check')
-
 function doCheck() {
   console.log('Sending Check...')
   ws.send('check')
 }
-check.addEventListener('click', doCheck)
+// const check = document.getElementById('check')
+// check.addEventListener('click', doCheck)
 
 const feed = document.getElementById('feed')
 feed.addEventListener('click', () => {
