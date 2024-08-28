@@ -15,10 +15,27 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 .owo-display {
-    min-height: 100vh;
+    padding: 25vh;
 }
 #owo {
     font-size: 8rem;
+}
+
+.btn {
+    background-color: red;
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    transition: background-color .3s, transform .3s;
+}
+.btn:hover {
+    background-color: #900;
+}
+.btn:active {
+    transform: translateY(4px);
 }
