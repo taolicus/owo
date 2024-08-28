@@ -11,6 +11,8 @@ const server = app.listen(3000, () => {
   console.log('OWO listening on port 3000')
 });
 
+const wss = new WebSocket.Server({ server });
+
 class Pet {
   constructor(name) {
     this.name = name;
@@ -65,8 +67,6 @@ class Pet {
 
 const owo = new Pet('OwO');
 
-const wss = new WebSocket.Server({ server });
-
 wss.on('connection', ws => {
   console.log('New WebSocket connection');
 
@@ -107,7 +107,6 @@ wss.on('connection', ws => {
 
 /* TU DU
 - On the client, listen for updates and apply them to the UI
-- Handle the event and update the pet's state
 - Broadcast the new state to all connected clients
 - Timer-Based Events
 
@@ -115,10 +114,23 @@ https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 
 */
 
+let dedFlag = false
+
 function gameLoop() {
   // changes
-  console.log(owo)
-  owo.timePasses()
+  if(owo.isAlive) {
+    owo.timePasses()
+    console.log(owo)
+  }
+  else {
+    if(dedFlag == false) {
+      wss.clients.forEach(client => {
+        console.log('sending ded')
+        client.send(JSON.stringify(owo))
+      })
+      dedFlag = true
+    }
+  }
 }
 
-setInterval(gameLoop, 1000 * 6)
+setInterval(gameLoop, 1000 * 1)

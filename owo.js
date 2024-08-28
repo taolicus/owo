@@ -35,7 +35,7 @@ owo.innerHTML = states[0].ascii
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
-setInterval(async () => {
+const blink = setInterval(async () => {
   owo.innerHTML = states[1].ascii
   await sleep(200)
   owo.innerHTML = states[0].ascii
@@ -50,20 +50,33 @@ setInterval(async () => {
 let ws
 let reconnectInterval = 1000 // Initial reconnection delay in ms
 
-function connect() {
+let owoData
+
+function connect(owoData) {
   ws = new WebSocket('wss://owo.tao.cl')
 
   ws.onopen = () => {
     console.log('Connected to the server')
     reconnectInterval = 1000 // Reset the reconnection interval after successful connection
     // fetch initial owo data
+    checkHandler()
   }
 
   ws.onmessage = (event) => {
     try {
       const response = JSON.parse(event.data)
-      console.log(response)
       // update owo data?
+      owoData = response
+      console.log(owoData)
+      if(!owoData.isAlive) {
+        clearInterval(blink)
+        owo.innerHTML = states[6].ascii
+      }
+      // switch(response) {
+      //   default:
+      //     console.log(owo)
+      //     break;
+      // }
     }
     catch {
       console.log(`Received: ${event.data}`)
@@ -83,14 +96,16 @@ function connect() {
 }
 
 // Initial connection
-connect()
+connect(owoData)
 
 // User Actions
 const check = document.getElementById('check')
-check.addEventListener('click', () => {
+
+function checkHandler() {
   console.log('Sending Check...')
   ws.send('check')
-})
+}
+check.addEventListener('click', checkHandler)
 
 const feed = document.getElementById('feed')
 feed.addEventListener('click', () => {
