@@ -114,6 +114,7 @@ wss.on('connection', ws => {
         owo.revive()
         ws.send('Revived')
         ws.send(JSON.stringify(owo))
+        break;
       default:
         console.log('Oli')
         ws.send('Oli');
