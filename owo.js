@@ -30,7 +30,7 @@ const states = [
 ]
 
 const owo = document.getElementById('owo')
-owo.innerHTML = states[0].ascii
+//owo.innerHTML = states[0].ascii
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -59,7 +59,7 @@ function connect(owoData) {
     console.log('Connected to the server')
     reconnectInterval = 1000 // Reset the reconnection interval after successful connection
     // fetch initial owo data
-    checkHandler()
+    doCheck()
   }
 
   ws.onmessage = (event) => {
@@ -71,6 +71,9 @@ function connect(owoData) {
       if(!owoData.isAlive) {
         clearInterval(blink)
         owo.innerHTML = states[6].ascii
+      }
+      else {
+        owo.innerHTML = states[0].ascii
       }
       // switch(response) {
       //   default:
@@ -101,11 +104,11 @@ connect(owoData)
 // User Actions
 const check = document.getElementById('check')
 
-function checkHandler() {
+function doCheck() {
   console.log('Sending Check...')
   ws.send('check')
 }
-check.addEventListener('click', checkHandler)
+check.addEventListener('click', doCheck)
 
 const feed = document.getElementById('feed')
 feed.addEventListener('click', () => {
@@ -123,4 +126,10 @@ const nap = document.getElementById('sleep')
 nap.addEventListener('click', () => {
   console.log('Sending sleep...')
   ws.send('sleep')
+})
+
+const revive = document.getElementById('revive')
+revive.addEventListener('click', () => {
+  console.log('Sending revive...')
+  ws.send('revive')
 })

@@ -1,6 +1,8 @@
 const Koa = require('koa');
 const WebSocket = require('ws');
 
+let dedFlag = false
+
 const app = new Koa();
 
 app.use(async ctx => {
@@ -52,6 +54,22 @@ class Pet {
     `);
   }
 
+  revive() {
+    this.hunger = 0;
+    this.happiness = 100;
+    this.energy = 100;
+    this.age = 0;
+    this.isAlive = true;
+    dedFlag = false;
+    // console.log(`
+    //   Name: ${this.name}
+    //   Age: ${this.age}
+    //   Hunger: ${this.hunger}
+    //   Happiness: ${this.happiness}
+    //   Energy: ${this.energy}
+    // `);
+  }
+
   timePasses() {
     this.age++;
     this.hunger += 5;
@@ -72,7 +90,6 @@ wss.on('connection', ws => {
 
   ws.on('message', (message) => {
     console.log(`Received message: ${message}`);
-    console.log(message)
     switch(message.toString()) { // turn buffer into string for comparison
       case 'check':
         console.log('Check')
@@ -93,6 +110,10 @@ wss.on('connection', ws => {
         ws.send('Slept')
         ws.send(JSON.stringify(owo))
         break;
+      case 'revive':
+        owo.revive()
+        ws.send('Revived')
+        ws.send(JSON.stringify(owo))
       default:
         console.log('Oli')
         ws.send('Oli');
@@ -113,8 +134,6 @@ wss.on('connection', ws => {
 https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 
 */
-
-let dedFlag = false
 
 function gameLoop() {
   // changes
