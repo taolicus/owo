@@ -56,14 +56,16 @@ function connect() {
   ws.onopen = () => {
     console.log('Connected to the server')
     reconnectInterval = 1000 // Reset the reconnection interval after successful connection
+    // fetch initial owo data
   }
 
   ws.onmessage = (event) => {
-    let response
-    if(response = JSON.parse(event.data)) {
+    try {
+      const response = JSON.parse(event.data)
       console.log(response)
+      // update owo data?
     }
-    else {
+    catch {
       console.log(`Received: ${event.data}`)
     }
   }
@@ -84,8 +86,26 @@ function connect() {
 connect()
 
 // User Actions
-const msg = document.getElementById('send-msg')
-msg.addEventListener('click', () => {
+const check = document.getElementById('check')
+check.addEventListener('click', () => {
   console.log('Sending Check...')
   ws.send('check')
+})
+
+const feed = document.getElementById('feed')
+feed.addEventListener('click', () => {
+  console.log('Sending feed...')
+  ws.send('feed')
+})
+
+const play = document.getElementById('play')
+play.addEventListener('click', () => {
+  console.log('Sending play...')
+  ws.send('play')
+})
+
+const nap = document.getElementById('sleep')
+nap.addEventListener('click', () => {
+  console.log('Sending sleep...')
+  ws.send('sleep')
 })

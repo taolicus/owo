@@ -63,7 +63,7 @@ class Pet {
   }
 }
 
-const pet = new Pet('OwO');
+const owo = new Pet('OwO');
 
 const wss = new WebSocket.Server({ server });
 
@@ -72,13 +72,31 @@ wss.on('connection', ws => {
 
   ws.on('message', (message) => {
     console.log(`Received message: ${message}`);
-    console.log(typeof message)
-    if(message == 'check') {
-      ws.send(JSON.stringify(pet))
-    } 
-    else {
-      console.log('...')
-      ws.send('Oliwi!!');
+    console.log(message)
+    switch(message.toString()) { // turn buffer into string for comparison
+      case 'check':
+        console.log('Check')
+        ws.send(JSON.stringify(owo))
+        break;
+      case 'feed':
+        owo.feed()
+        ws.send('Fed')
+        ws.send(JSON.stringify(owo))
+        break;
+      case 'play':
+        owo.play()
+        ws.send('Played')
+        ws.send(JSON.stringify(owo))
+        break;
+      case 'sleep':
+        owo.sleep()
+        ws.send('Slept')
+        ws.send(JSON.stringify(owo))
+        break;
+      default:
+        console.log('Oli')
+        ws.send('Oli');
+        break;
     }
   });
 
@@ -88,10 +106,9 @@ wss.on('connection', ws => {
 });
 
 /* TU DU
-- Pet Class/State Object
+- On the client, listen for updates and apply them to the UI
 - Handle the event and update the pet's state
 - Broadcast the new state to all connected clients
-- On the client, listen for updates and apply them to the UI
 - Timer-Based Events
 
 https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
@@ -100,8 +117,8 @@ https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 
 function gameLoop() {
   // changes
-  console.log(pet)
-  pet.timePasses()
+  console.log(owo)
+  owo.timePasses()
 }
 
 setInterval(gameLoop, 1000 * 6)
