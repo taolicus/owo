@@ -101,6 +101,7 @@ https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 function gameLoop() {
   // changes
   console.log(pet)
+  pet.timePasses()
 }
 
-setInterval(gameLoop, 1000 * 3)
+setInterval(gameLoop, 1000 * 6)
