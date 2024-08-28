@@ -76,6 +76,6 @@ connect()
 // User Actions
 const msg = document.getElementById('send-msg')
 msg.addEventListener('click', () => {
-  console.log('Sending Oli...')
-  ws.send('Hola OwO')
+  console.log('Sending Check...')
+  ws.send('check')
 })

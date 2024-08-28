@@ -11,21 +11,6 @@ const server = app.listen(3000, () => {
   console.log('OWO listening on port 3000')
 });
 
-const wss = new WebSocket.Server({ server });
-
-wss.on('connection', ws => {
-  console.log('New WebSocket connection');
-
-  ws.on('message', (message) => {
-    console.log(`Received message: ${message}`);
-    ws.send('Oliwi!!');
-  });
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
-});
-
 class Pet {
   constructor() {
     this.state = 'Idle'; // Initial state
@@ -58,7 +43,27 @@ class Pet {
 
 const pet = new Pet();
 
+const wss = new WebSocket.Server({ server });
 
+wss.on('connection', ws => {
+  console.log('New WebSocket connection');
+
+  ws.on('message', (message) => {
+    console.log(`Received message: ${message}`);
+    console.log(typeof message)
+    if(message == 'check') {
+      ws.send('!'+JSON.stringify(pet))
+    } 
+    else {
+      console.log('...')
+      ws.send('Oliwi!!');
+    }
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
 /* TU DU
 - Pet Class/State Object
 - Handle the event and update the pet's state
