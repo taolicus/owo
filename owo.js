@@ -23,23 +23,27 @@ const states = [
     name: 'perplexed',
     ascii: 'owo'
   },
+  {
+    name: 'ded',
+    ascii: 'xwx'
+  },
 ]
 
 const owo = document.getElementById('owo')
 owo.innerHTML = states[0].ascii
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms))
-// }
-// setInterval(async () => {
-//   owo.innerHTML = states[1].ascii
-//   await sleep(200)
-//   owo.innerHTML = states[0].ascii
-//   await sleep(200)
-//   owo.innerHTML = states[1].ascii
-//   await sleep(200)
-//   owo.innerHTML = states[0].ascii
-// }, 6000)
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+setInterval(async () => {
+  owo.innerHTML = states[1].ascii
+  await sleep(200)
+  owo.innerHTML = states[0].ascii
+  await sleep(200)
+  owo.innerHTML = states[1].ascii
+  await sleep(200)
+  owo.innerHTML = states[0].ascii
+}, 6000)
 
 // Web Socket Client
 
@@ -55,7 +59,13 @@ function connect() {
   }
 
   ws.onmessage = (event) => {
-    console.log(`Received: ${event.data}`)
+    let response
+    if(response = JSON.parse(event.data)) {
+      console.log(response)
+    }
+    else {
+      console.log(`Received: ${event.data}`)
+    }
   }
 
   ws.onclose = () => {
