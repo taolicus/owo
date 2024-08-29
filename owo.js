@@ -60,17 +60,19 @@ function connect(owoData) {
       const response = JSON.parse(event.data)
       // update owo data?
       owoData = response
+      owo.innerHTML = owoData.ascii
       console.log(owoData)
       if(!owoData.isAlive) {
+        console.log('ded')
+        //console.log(blink)
         clearInterval(blink)
-        owo.innerHTML = states[6].ascii
+        //console.log(blink)
         document.getElementById('feed').style.display = 'none'
         document.getElementById('play').style.display = 'none'
         document.getElementById('sleep').style.display = 'none'
         document.getElementById('revive').style.display = 'block'
       }
       else {
-        owo.innerHTML = states[0].ascii
         document.getElementById('feed').style.display = 'inline-block'
         document.getElementById('play').style.display = 'inline-block'
         document.getElementById('sleep').style.display = 'inline-block'
@@ -85,9 +87,9 @@ function connect(owoData) {
           owo.innerHTML = states[0].ascii
         }, 6000)
       }
-      // switch(response) {
+      // switch(owoData.isAlive) {
       //   default:
-      //     console.log(owo)
+      //     console.log(owoData)
       //     break;
       // }
     }

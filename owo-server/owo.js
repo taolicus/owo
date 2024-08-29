@@ -23,6 +23,7 @@ class Pet {
     this.energy = 100;
     this.age = 0;
     this.isAlive = true;
+    this.ascii = 'OwO';
   }
 
   feed() {
@@ -60,6 +61,7 @@ class Pet {
     this.energy = 100;
     this.age = 0;
     this.isAlive = true;
+    this.ascii = 'OwO';
     dedFlag = false;
     // console.log(`
     //   Name: ${this.name}
@@ -78,6 +80,7 @@ class Pet {
 
     if (this.hunger >= 100 || this.happiness <= 0 || this.energy <= 0) {
       this.isAlive = false;
+      this.ascii = 'xwx';
       console.log(`${this.name} has passed away. Game over.`);
     }
   }
