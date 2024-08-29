@@ -30,7 +30,6 @@ const states = [
 ]
 
 const owo = document.getElementById('owo')
-//owo.innerHTML = states[0].ascii
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -39,7 +38,6 @@ function sleep(ms) {
 let blink = undefined
 
 // Web Socket Client
-
 let ws
 let reconnectInterval = 1000 // Initial reconnection delay in ms
 
@@ -51,23 +49,19 @@ function connect(owoData) {
   ws.onopen = () => {
     console.log('Connected to the server')
     reconnectInterval = 1000 // Reset the reconnection interval after successful connection
-    // fetch initial owo data
-    doCheck()
+    doCheck() // fetch initial owo data
   }
 
   ws.onmessage = (event) => {
     try {
       const response = JSON.parse(event.data)
-      // update owo data?
       owoData = response
       owo.innerHTML = owoData.ascii
       console.log(owoData)
       if(!owoData.isAlive) {
         console.log('ded')
-        //console.log(blink)
         clearInterval(blink)
         blink = undefined
-        //console.log(blink)
         document.getElementById('feed').style.display = 'none'
         document.getElementById('play').style.display = 'none'
         document.getElementById('sleep').style.display = 'none'
@@ -90,11 +84,6 @@ function connect(owoData) {
           }, 6000)
         }
       }
-      // switch(owoData.isAlive) {
-      //   default:
-      //     console.log(owoData)
-      //     break;
-      // }
     }
     catch {
       console.log(`Received: ${event.data}`)
