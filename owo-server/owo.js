@@ -6,7 +6,7 @@ let dedFlag = false
 const app = new Koa();
 
 app.use(async ctx => {
-  ctx.body = 'OwO';
+  ctx.body = 'OwO API';
 });
 
 const server = app.listen(3000, () => {
@@ -45,16 +45,6 @@ class Pet {
     console.log(`${this.name} had a good sleep.`);
   }
 
-  checkStatus() {
-    console.log(`
-      Name: ${this.name}
-      Age: ${this.age}
-      Hunger: ${this.hunger}
-      Happiness: ${this.happiness}
-      Energy: ${this.energy}
-    `);
-  }
-
   revive() {
     this.hunger = 0;
     this.happiness = 100;
@@ -63,13 +53,6 @@ class Pet {
     this.isAlive = true;
     this.ascii = 'OwO';
     dedFlag = false;
-    // console.log(`
-    //   Name: ${this.name}
-    //   Age: ${this.age}
-    //   Hunger: ${this.hunger}
-    //   Happiness: ${this.happiness}
-    //   Energy: ${this.energy}
-    // `);
   }
 
   timePasses() {
@@ -131,8 +114,6 @@ wss.on('connection', ws => {
 });
 
 /* TU DU
-- On the client, listen for updates and apply them to the UI
-- Broadcast the new state to all connected clients
 - Timer-Based Events
 
 https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
@@ -156,4 +137,4 @@ function gameLoop() {
   }
 }
 
-setInterval(gameLoop, 1000 * 1)
+setInterval(gameLoop, 1000 * 60)
