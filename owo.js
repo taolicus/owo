@@ -36,15 +36,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-let blink = setInterval(async () => {
-  owo.innerHTML = states[1].ascii
-  await sleep(200)
-  owo.innerHTML = states[0].ascii
-  await sleep(200)
-  owo.innerHTML = states[1].ascii
-  await sleep(200)
-  owo.innerHTML = states[0].ascii
-}, 6000)
+let blink = undefined
 
 // Web Socket Client
 
@@ -74,6 +66,7 @@ function connect(owoData) {
         console.log('ded')
         //console.log(blink)
         clearInterval(blink)
+        blink = undefined
         //console.log(blink)
         document.getElementById('feed').style.display = 'none'
         document.getElementById('play').style.display = 'none'
@@ -85,6 +78,17 @@ function connect(owoData) {
         document.getElementById('play').style.display = 'inline-block'
         document.getElementById('sleep').style.display = 'inline-block'
         document.getElementById('revive').style.display = 'none'
+        if(blink == undefined) {
+          blink = setInterval(async () => {
+            owo.innerHTML = states[1].ascii
+            await sleep(200)
+            owo.innerHTML = states[0].ascii
+            await sleep(200)
+            owo.innerHTML = states[1].ascii
+            await sleep(200)
+            owo.innerHTML = states[0].ascii
+          }, 6000)
+        }
       }
       // switch(owoData.isAlive) {
       //   default:
