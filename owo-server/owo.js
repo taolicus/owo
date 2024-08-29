@@ -55,7 +55,7 @@ class Pet {
     dedFlag = false;
   }
 
-  timePasses() {
+  update() {
     this.age++;
     this.hunger += 5;
     this.happiness -= 5;
@@ -121,9 +121,8 @@ https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 */
 
 function gameLoop() {
-  // changes
   if(owo.isAlive) {
-    owo.timePasses()
+    owo.update() // update
     console.log(owo)
   }
   else {
