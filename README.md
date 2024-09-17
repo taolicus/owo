@@ -7,4 +7,5 @@ WebSocket multiplayer virtual pet.
 - To deploy, create a `.env` file at the root of this project, and add values for `VITE_OUTPUT_DIR` and `VITE_BASE_URL`. Then run `npm run build`.
 
 ## Tu Du
-- TBC
+- Add revive tribute with image recognition api.
+- Add FSM and some visual feedback on states
