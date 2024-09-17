@@ -18,9 +18,9 @@ body {
     align-items: center;
     min-height: 100vh;
 }
-.owo-display {
+/* .owo-display {
     padding: 25vh;
-}
+} */
 #owo {
     font-size: 8rem;
 }
