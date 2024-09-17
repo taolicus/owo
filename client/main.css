@@ -39,3 +39,9 @@ body {
 .btn:active {
     transform: translateY(4px);
 }
+
+#feed,
+#sleep,
+#play {
+    display: none;
+}
