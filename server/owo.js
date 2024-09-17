@@ -136,4 +136,4 @@ function gameLoop() {
   }
 }
 
-setInterval(gameLoop, 1000 * 60)
+setInterval(gameLoop, 1000 * 60 * 24)
