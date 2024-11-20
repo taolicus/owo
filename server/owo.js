@@ -64,48 +64,80 @@ class Pet {
     if (this.hunger >= 100 || this.happiness <= 0 || this.energy <= 0) {
       this.isAlive = false;
       this.ascii = 'xwx';
-      console.log(`${this.name} has passed away. Game over.`);
+      console.log(`${this.name} is ded.`);
     }
   }
 }
 
-const owo = new Pet('OwO');
+const faces = [
+  'OwO',
+  'UzU',
+  'ÒwÓ',
+  'ÓwÒ',
+  'XwX',
+]
+
+class OwO {
+  constructor() {
+    this.face = 'OwO'
+    this.stats = {}
+  }
+  update() {
+    if(this.stats[this.face]) {
+      this.stats[this.face]++
+    }
+    else {
+      this.stats[this.face] = 1
+    }
+    console.log(this.stats)
+  }
+  changeFace(faceIndex) {
+    this.face = faces[faceIndex]
+  }
+}
+
+// const owo = new Pet('OwO');
+const owo = new OwO();
 
 wss.on('connection', ws => {
   console.log('New WebSocket connection');
 
   ws.on('message', (message) => {
     console.log(`Received message: ${message}`);
-    switch(message.toString()) { // turn buffer into string for comparison
-      case 'check':
-        console.log('Check')
-        ws.send(JSON.stringify(owo))
-        break;
-      case 'feed':
-        owo.feed()
-        ws.send('Fed')
-        ws.send(JSON.stringify(owo))
-        break;
-      case 'play':
-        owo.play()
-        ws.send('Played')
-        ws.send(JSON.stringify(owo))
-        break;
-      case 'sleep':
-        owo.sleep()
-        ws.send('Slept')
-        ws.send(JSON.stringify(owo))
-        break;
-      case 'revive':
-        owo.revive()
-        ws.send('Revived')
-        ws.send(JSON.stringify(owo))
-        break;
-      default:
-        console.log('Oli')
-        ws.send('Oli');
-        break;
+    if(message.toString() === 'get_face') {
+      owo.changeFace(Math.floor(Math.random() * faces.length))
+      ws.send(JSON.stringify(owo))
     }
+    // switch(message.toString()) { // turn buffer into string for comparison
+    //   case 'check':
+    //     console.log('Check')
+    //     ws.send(JSON.stringify(owo))
+    //     break;
+    //   case 'feed':
+    //     owo.feed()
+    //     ws.send('Fed')
+    //     ws.send(JSON.stringify(owo))
+    //     break;
+    //   case 'play':
+    //     owo.play()
+    //     ws.send('Played')
+    //     ws.send(JSON.stringify(owo))
+    //     break;
+    //   case 'sleep':
+    //     owo.sleep()
+    //     ws.send('Slept')
+    //     ws.send(JSON.stringify(owo))
+    //     break;
+    //   case 'revive':
+    //     owo.revive()
+    //     ws.send('Revived')
+    //     ws.send(JSON.stringify(owo))
+    //     break;
+    //   default:
+    //     console.log('Oli')
+    //     ws.send('Oli');
+    //     break;
+    // }
   });
 
   ws.on('close', () => {
@@ -121,19 +153,21 @@ https://chatgpt.com/c/0b07dd9f-0d65-499b-9a62-7584ca69a305
 */
 
 function gameLoop() {
-  if(owo.isAlive) {
-    owo.update() // update
-    console.log(owo)
-  }
-  else {
-    if(dedFlag == false) {
-      wss.clients.forEach(client => {
-        console.log('sending ded')
-        client.send(JSON.stringify(owo))
-      })
-      dedFlag = true
-    }
-  }
+  // if(owo.isAlive) {
+  //   owo.update() // update
+  //   console.log(owo)
+  // }
+  // else {
+  //   if(dedFlag == false) {
+  //     wss.clients.forEach(client => {
+  //       console.log('sending ded')
+  //       client.send(JSON.stringify(owo))
+  //     })
+  //     dedFlag = true
+  //   }
+  // }
+  owo.update()
 }
 
-setInterval(gameLoop, 1000 * 60 * 24)
+// setInterval(gameLoop, 1000 * 60 * 60 * 24)
+setInterval(gameLoop, 2000)

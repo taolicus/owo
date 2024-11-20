@@ -1,41 +1,8 @@
-const states = [
-  {
-    name: 'idle',
-    ascii: 'OwO'
-  },
-  {
-    name: 'blinking',
-    ascii: '-w-'
-  },
-  {
-    name: 'angry',
-    ascii: 'ÒwÓ'
-  },
-  {
-    name: 'scared',
-    ascii: 'ÓwÒ'
-  },
-  {
-    name: 'sad',
-    ascii: 'UwU'
-  },
-  {
-    name: 'perplexed',
-    ascii: 'owo'
-  },
-  {
-    name: 'ded',
-    ascii: 'xwx'
-  },
-]
-
 const owo = document.getElementById('owo')
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-let blink = undefined
+const actionButtons = document.getElementById('actions')
+const ctx = document.getElementById('stats-chart');
+ctx.style.width = '120px'
+ctx.style.margin = '2rem'
 
 // Web Socket Client
 let ws
@@ -43,62 +10,83 @@ let reconnectInterval = 1000 // Initial reconnection delay in ms
 
 let owoData
 
+let actions = []
+
 function connect(owoData) {
-  ws = new WebSocket('wss://owo.tao.cl')
+  // ws = new WebSocket('wss://owo.tao.cl')
+  ws = new WebSocket('ws://localhost:3000')
 
-  ws.onopen = () => {
-    console.log('Connected to the server')
-    reconnectInterval = 1000 // Reset the reconnection interval after successful connection
-    doCheck() // fetch initial owo data
-  }
-
-  ws.onmessage = (event) => {
-    try {
-      const response = JSON.parse(event.data)
-      owoData = response
-      owo.innerHTML = owoData.ascii
-      console.log(owoData)
-      if(!owoData.isAlive) {
-        console.log('ded')
-        clearInterval(blink)
-        blink = undefined
-        document.getElementById('feed').style.display = 'none'
-        document.getElementById('play').style.display = 'none'
-        document.getElementById('sleep').style.display = 'none'
-        document.getElementById('revive').style.display = 'block'
+  if(ws) {
+    ws.onopen = () => {
+      console.log('Connected to the server')
+      reconnectInterval = 1000 // Reset the reconnection interval after successful connection
+      // doCheck() // fetch initial owo data
+      ws.send('get_face')
+    }
+  
+    ws.onmessage = (event) => {
+      try {
+        const response = JSON.parse(event.data)
+        owoData = response
+        owo.innerHTML = owoData.face
+        console.log(owoData)
+        owo.innerHTML = owoData.face
+        // if(!owoData.isAlive) {
+        //   console.log('ded')
+        //   document.getElementById('feed').style.display = 'none'
+        //   document.getElementById('play').style.display = 'none'
+        //   document.getElementById('sleep').style.display = 'none'
+        //   document.getElementById('revive').style.display = 'block'
+        // }
+        // else {
+        //   document.getElementById('feed').style.display = 'inline-block'
+        //   document.getElementById('play').style.display = 'inline-block'
+        //   document.getElementById('sleep').style.display = 'inline-block'
+        //   document.getElementById('revive').style.display = 'none'
+        // }
       }
-      else {
-        document.getElementById('feed').style.display = 'inline-block'
-        document.getElementById('play').style.display = 'inline-block'
-        document.getElementById('sleep').style.display = 'inline-block'
-        document.getElementById('revive').style.display = 'none'
-        if(blink == undefined) {
-          blink = setInterval(async () => {
-            owo.innerHTML = states[1].ascii
-            await sleep(200)
-            owo.innerHTML = states[0].ascii
-            await sleep(200)
-            owo.innerHTML = states[1].ascii
-            await sleep(200)
-            owo.innerHTML = states[0].ascii
-          }, 6000)
-        }
+      catch {
+        console.log(`Received: ${event.data}`)
+      }
+
+      if(owoData) {
+        // Chart
+        console.log(owoData, '???')
+        const data = Object.values(owoData.stats)
+        console.log(data)
+        const labels = Object.keys(owoData.stats)
+        console.log(labels)
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels,
+            datasets: [{
+              data,
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        });
       }
     }
-    catch {
-      console.log(`Received: ${event.data}`)
+  
+    ws.onclose = () => {
+      console.log('WebSocket connection closed. Attempting to reconnect...')
+      setTimeout(connect, reconnectInterval)
+      reconnectInterval = Math.min(reconnectInterval * 2, 30000) // Exponential backoff, max 30 seconds
     }
-  }
-
-  ws.onclose = () => {
-    console.log('WebSocket connection closed. Attempting to reconnect...')
-    setTimeout(connect, reconnectInterval)
-    reconnectInterval = Math.min(reconnectInterval * 2, 30000) // Exponential backoff, max 30 seconds
-  }
-
-  ws.onerror = (error) => {
-    console.error(`WebSocket error: ${error.message}`)
-    ws.close() // Close the connection on error to trigger reconnection
+  
+    ws.onerror = (error) => {
+      console.error(`WebSocket error: ${error.message}`)
+      ws.close() // Close the connection on error to trigger reconnection
+    }
   }
 }
 
@@ -113,26 +101,49 @@ function doCheck() {
 // const check = document.getElementById('check')
 // check.addEventListener('click', doCheck)
 
-const feed = document.getElementById('feed')
-feed.addEventListener('click', () => {
-  console.log('Sending feed...')
-  ws.send('feed')
+// const feed = document.getElementById('feed')
+// feed.addEventListener('click', () => {
+//   console.log('Sending feed...')
+//   ws.send('feed')
+// })
+
+// const play = document.getElementById('play')
+// play.addEventListener('click', () => {
+//   console.log('Sending play...')
+//   ws.send('play')
+// })
+
+// const nap = document.getElementById('sleep')
+// nap.addEventListener('click', () => {
+//   console.log('Sending sleep...')
+//   ws.send('sleep')
+// })
+
+// const revive = document.getElementById('revive')
+// revive.addEventListener('click', () => {
+//   console.log('Sending revive...')
+//   ws.send('revive')
+// })
+
+function createAction(name, label, callback) {
+  const btn = document.createElement('button')
+  btn.id = name
+  btn.classList.add('btn')
+  btn.innerHTML = label
+  btn.addEventListener('click', callback)
+  return btn
+}
+
+const pet = createAction('pet', 'Pet', () => {
+  console.log('Sending pet...')
+  // ws.send(name)
 })
 
-const play = document.getElementById('play')
-play.addEventListener('click', () => {
-  console.log('Sending play...')
-  ws.send('play')
+const getFace = createAction('get_face', 'Get Face', () => {
+  console.log('Sending get_face...')
+  ws.send('get_face')
 })
 
-const nap = document.getElementById('sleep')
-nap.addEventListener('click', () => {
-  console.log('Sending sleep...')
-  ws.send('sleep')
-})
+actions.push(getFace)
 
-const revive = document.getElementById('revive')
-revive.addEventListener('click', () => {
-  console.log('Sending revive...')
-  ws.send('revive')
-})
+actions.forEach(action => {actionButtons.appendChild(getFace)})
