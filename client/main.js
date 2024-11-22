@@ -20,30 +20,15 @@ function connect(owoData) {
     ws.onopen = () => {
       console.log('Connected to the server')
       reconnectInterval = 1000 // Reset the reconnection interval after successful connection
-      // doCheck() // fetch initial owo data
       ws.send('get_face')
     }
-  
+
     ws.onmessage = (event) => {
       try {
         const response = JSON.parse(event.data)
         owoData = response
         owo.innerHTML = owoData.face
-        console.log(owoData)
         owo.innerHTML = owoData.face
-        // if(!owoData.isAlive) {
-        //   console.log('ded')
-        //   document.getElementById('feed').style.display = 'none'
-        //   document.getElementById('play').style.display = 'none'
-        //   document.getElementById('sleep').style.display = 'none'
-        //   document.getElementById('revive').style.display = 'block'
-        // }
-        // else {
-        //   document.getElementById('feed').style.display = 'inline-block'
-        //   document.getElementById('play').style.display = 'inline-block'
-        //   document.getElementById('sleep').style.display = 'inline-block'
-        //   document.getElementById('revive').style.display = 'none'
-        // }
       }
       catch {
         console.log(`Received: ${event.data}`)
@@ -51,11 +36,8 @@ function connect(owoData) {
 
       if(owoData) {
         // Chart
-        console.log(owoData, '???')
         const data = Object.values(owoData.stats)
-        console.log(data)
         const labels = Object.keys(owoData.stats)
-        console.log(labels)
         new Chart(ctx, {
           type: 'pie',
           data: {
@@ -76,13 +58,13 @@ function connect(owoData) {
         });
       }
     }
-  
+
     ws.onclose = () => {
       console.log('WebSocket connection closed. Attempting to reconnect...')
       setTimeout(connect, reconnectInterval)
       reconnectInterval = Math.min(reconnectInterval * 2, 30000) // Exponential backoff, max 30 seconds
     }
-  
+
     ws.onerror = (error) => {
       console.error(`WebSocket error: ${error.message}`)
       ws.close() // Close the connection on error to trigger reconnection
@@ -94,37 +76,6 @@ function connect(owoData) {
 connect(owoData)
 
 // User Actions
-function doCheck() {
-  console.log('Sending Check...')
-  ws.send('check')
-}
-// const check = document.getElementById('check')
-// check.addEventListener('click', doCheck)
-
-// const feed = document.getElementById('feed')
-// feed.addEventListener('click', () => {
-//   console.log('Sending feed...')
-//   ws.send('feed')
-// })
-
-// const play = document.getElementById('play')
-// play.addEventListener('click', () => {
-//   console.log('Sending play...')
-//   ws.send('play')
-// })
-
-// const nap = document.getElementById('sleep')
-// nap.addEventListener('click', () => {
-//   console.log('Sending sleep...')
-//   ws.send('sleep')
-// })
-
-// const revive = document.getElementById('revive')
-// revive.addEventListener('click', () => {
-//   console.log('Sending revive...')
-//   ws.send('revive')
-// })
-
 function createAction(name, label, callback) {
   const btn = document.createElement('button')
   btn.id = name
@@ -144,6 +95,11 @@ const getFace = createAction('get_face', 'Get Face', () => {
   ws.send('get_face')
 })
 
+function doCheck() {
+  console.log('Sending Check...')
+  ws.send('check')
+}
+
 actions.push(getFace)
 
-actions.forEach(action => {actionButtons.appendChild(getFace)})
+actions.forEach(() => {actionButtons.appendChild(getFace)})
