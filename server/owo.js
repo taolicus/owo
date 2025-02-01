@@ -7,8 +7,10 @@ app.use(async ctx => {
   ctx.body = 'OwO API';
 });
 
-const server = app.listen(3000, () => {
-  console.log('OWO listening on port 3000')
+const port = 3001
+
+const server = app.listen(port, () => {
+  console.log(`OWO listening on port ${port}`)
 });
 
 const wss = new WebSocket.Server({ server });
