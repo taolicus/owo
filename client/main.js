@@ -8,9 +8,9 @@ ctx.style.margin = '2rem'
 let myChart = new Chart(ctx, {
   type: 'pie',
   data: {
-    labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+    labels: [],
     datasets: [{
-      data: [1, 2, 3, 4, 5, 6, 7],
+      data: [],
       borderWidth: 0
     }]
   },
@@ -32,8 +32,13 @@ let ws
 let reconnectInterval = 1000 // Initial reconnection delay in ms
 
 function connect() {
-  // ws = new WebSocket('wss://owo.tao.cl')
-  ws = new WebSocket('ws://localhost:3000')
+  const host = window.location.hostname;
+  const prod = host !== 'localhost';
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const socket = prod ? '/owo_ws' : ':3000';
+  const socket_url = `${protocol}//${host}${socket}`;
+  console.log('Connecting to:', socket_url);
+  ws = new WebSocket(socket_url);
 
   if(ws) {
     ws.onopen = () => {
