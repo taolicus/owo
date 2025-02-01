@@ -35,7 +35,7 @@ function connect() {
   const host = window.location.hostname;
   const prod = host !== 'localhost';
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const socket = prod ? '/owo_ws' : ':3000';
+  const socket = prod ? '/owo_ws' : ':3001';
   const socket_url = `${protocol}//${host}${socket}`;
   console.log('Connecting to:', socket_url);
   ws = new WebSocket(socket_url);
