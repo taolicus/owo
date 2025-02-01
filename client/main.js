@@ -1,18 +1,37 @@
 const owo = document.getElementById('owo')
-const actionButtons = document.getElementById('actions')
+
+// Chart
 const ctx = document.getElementById('stats-chart');
 ctx.style.width = '120px'
 ctx.style.margin = '2rem'
+// let stats
+let myChart = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+    datasets: [{
+      data: [1, 2, 3, 4, 5, 6, 7],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false
+      },
+      colorschemes: {
+        scheme: 'tableau.Classic20'
+      }
+    }
+  }
+});
 
 // Web Socket Client
 let ws
 let reconnectInterval = 1000 // Initial reconnection delay in ms
 
-let owoData
-
-let actions = []
-
-function connect(owoData) {
+function connect() {
   // ws = new WebSocket('wss://owo.tao.cl')
   ws = new WebSocket('ws://localhost:3000')
 
@@ -20,42 +39,20 @@ function connect(owoData) {
     ws.onopen = () => {
       console.log('Connected to the server')
       reconnectInterval = 1000 // Reset the reconnection interval after successful connection
-      ws.send('get_face')
+      // ws.send('get_face')
     }
 
     ws.onmessage = (event) => {
       try {
         const response = JSON.parse(event.data)
-        owoData = response
-        owo.innerHTML = owoData.face
-        owo.innerHTML = owoData.face
+        owo.innerHTML = response.face
+        owo.innerHTML = response.face
+        myChart.data.labels = Object.keys(response.stats);
+        myChart.data.datasets[0].data = Object.values(response.stats);
+        myChart.update();
       }
       catch {
         console.log(`Received: ${event.data}`)
-      }
-
-      if(owoData) {
-        // Chart
-        const data = Object.values(owoData.stats)
-        const labels = Object.keys(owoData.stats)
-        new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels,
-            datasets: [{
-              data,
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: false
-              }
-            }
-          }
-        });
       }
     }
 
@@ -73,9 +70,12 @@ function connect(owoData) {
 }
 
 // Initial connection
-connect(owoData)
+connect()
 
 // User Actions
+const actionButtons = document.getElementById('actions')
+let actions = []
+
 function createAction(name, label, callback) {
   const btn = document.createElement('button')
   btn.id = name
@@ -100,6 +100,6 @@ function doCheck() {
   ws.send('check')
 }
 
-actions.push(getFace)
+// actions.push(getFace)
 
 actions.forEach(() => {actionButtons.appendChild(getFace)})

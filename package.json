@@ -1,0 +1,21 @@
+{
+  "name": "owo",
+  "version": "1.0.0",
+  "description": "WebSocket multiplayer virtual pet.",
+  "scripts": {
+    "start": "cd server && npm run serve && cd ../client && npm run dev",
+    "logs": "cd server && pm2 logs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taolicus/owo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/taolicus/owo/issues"
+  },
+  "homepage": "https://github.com/taolicus/owo#readme"
+}
